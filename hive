@@ -1,0 +1,59 @@
+#---------------------------------------- TASK #1
+
+# Fields:
+# age, workclass, fnlwgt, education, education_num, marital_status, occupation, relationship, race,
+# sex, capital_gain, capital_loss, hours_per_week, native_country, income.
+# All the fields are strings.
+CREATE EXTERNAL TABLE census (
+    age STRING,
+    workclass STRING,
+    fnlwgt STRING,
+    education STRING,
+    education_num STRING,
+    marital_status STRING,
+    occupation STRING,
+    relationship STRING,
+    race STRING,
+    sex STRING,
+    capital_gain STRING,
+    capital_loss STRING,
+    hours_per_week STRING,
+    native_country STRING,
+    income STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+LOCATION '/dsets/census';
+
+# How many records are there?
+SELECT COUNT(*) AS total_records FROM census;
+# 32563 - Time taken: 47.454 seconds, Fetched: 1 row(s)
+
+# How many records are there for each value of the “native_country” column?
+SELECT native_country, COUNT(*) AS country_count 
+FROM census 
+GROUP BY native_country;
+# Time taken: 48.02 seconds, Fetched: 44 row(s)
+
+
+#----------------------------------------- TASK #2
+
+# Create a new table in ORC format with the name ‘census_orc’ based on the ‘census’ table. Fill
+# the table with the data from the ‘census’ table.
+# Run the same queries on the table. Do the execution times differ?
+# Create the census_orc table based on census table
+CREATE TABLE census_orc
+STORED AS ORC
+AS
+SELECT * FROM census;
+
+# How many records are there?
+SELECT COUNT(*) AS total_records FROM census;
+# 32563 - Time taken: 0.154 seconds, Fetched: 1 row(s)
+
+# How many records are there for each value of the “native_country” column?
+SELECT native_country, COUNT(*) AS country_count 
+FROM census 
+GROUP BY native_country;
+# Time taken: 37.56 seconds, Fetched: 44 row(s)
